@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">InstagramEmulator</string>
+    <string name="dm_title">Direct Message</string>
+    <string name="home_title">Home</string>
+    <string name="post_title">Post</string>
+    <string name="profile_title">Profile</string>
+    <string name="user_hint">Username</string>
+    <string name="pass_hint">Password</string>
+    <string name="login_button">Log In</string>
+    <string name="sign_button">Sign Up</string>
+    <string name="logout_button">Log Out</string>
+    <string name="logo_description">The Instagram Logo, in black</string>
+    <string name="picture_description">Picture just taken with camera</string>
+    <string name="caption_hint">Caption...</string>
+    <string name="post_button">Post To Feed</string>
+</resources>
