@@ -37,6 +37,11 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
+
+        if(ParseUser.getCurrentUser() != null) {
+            Intent intent = new Intent(this, TimelineActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void attemptLogin(View view) {
@@ -50,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i(TAG, String.format("%s logged in successfully", username));
                     Toast.makeText(LoginActivity.this, "Logging in...", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, TimelineActivity.class);
+                    etUsername.setText("");
+                    etPassword.setText("");
                     startActivity(intent);
                 }
                 else {
@@ -74,6 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i(TAG, String.format("New account created for %s", username));
                     Toast.makeText(LoginActivity.this, "User signed up", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, TimelineActivity.class);
+                    etUsername.setText("");
+                    etPassword.setText("");
                     startActivity(intent);
                 }
                 else {

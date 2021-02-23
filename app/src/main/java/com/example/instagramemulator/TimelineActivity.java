@@ -30,6 +30,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.instagramemulator.Models.Post;
@@ -37,9 +38,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class TimelineActivity extends AppCompatActivity {
@@ -48,6 +51,7 @@ public class TimelineActivity extends AppCompatActivity {
     public static final int POST_REQUEST_CODE = 554;
     public final Context context = this;
     BottomNavigationView bottomNavigation;
+    TextView tvTemporary;
     String photoFileName = "photo.jpg";
     File photoFile;
 
@@ -58,6 +62,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        tvTemporary = findViewById(R.id.tvTemporary);
         bottomNavigation = findViewById(R.id.btmNavigation);
         bottomNavigation.getMenu().getItem(0).setIcon(R.drawable.ic_home_filled);
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
@@ -77,7 +82,6 @@ public class TimelineActivity extends AppCompatActivity {
                             catch (Exception e) {
                                 e.printStackTrace();
                             }
-
                         }
                     }
                     break;
@@ -105,17 +109,36 @@ public class TimelineActivity extends AppCompatActivity {
         if(requestCode == CAMERA_REQUEST_CODE) {
             if(resultCode == RESULT_OK) {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                takenImage = BitmapScaler.scaleToFitWidth(takenImage, 800);
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                takenImage.compress(Bitmap.CompressFormat.JPEG, 30, bs);
+
                 Intent intent = new Intent(this, PostActivity.class);
-                intent.putExtra("picture", takenImage);
-                startActivityForResult(intent, POST_REQUEST_CODE);
+                intent.putExtra("picture_bytes", bs.toByteArray());
+                try {
+                    Log.i(TAG, "Have picture; heading to PostActivity");
+                    startActivityForResult(intent, POST_REQUEST_CODE);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
             else {
                 Toast.makeText(this, "Error taking photo", Toast.LENGTH_SHORT).show();
             }
         }
         else if(requestCode == POST_REQUEST_CODE && resultCode == RESULT_OK) {
-            savePost(data.getExtras().getString("caption"), ParseUser.getCurrentUser(), photoFile);
-            //Do the Recycler view stuff
+            try {
+                savePost(data.getExtras().getString("caption"), ParseUser.getCurrentUser(), photoFile);
+                //Do the Recycler view stuff
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Log.e(TAG, "Bad result while finishing activity");
         }
     }
 
@@ -139,6 +162,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if(e == null) {
                     Log.i(TAG, "Post successfully saved to Parse server");
+                    Toast.makeText(TimelineActivity.this, "Posted to Parse Server", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.e(TAG, "Error saving post to Parse server");

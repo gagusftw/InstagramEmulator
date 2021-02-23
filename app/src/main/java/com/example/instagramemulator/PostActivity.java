@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,7 +29,6 @@ public class PostActivity extends AppCompatActivity {
     EditText etCaption;
     Button btnPost;
     ImageView ivPicture;
-    Bitmap takenImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +41,9 @@ public class PostActivity extends AppCompatActivity {
         etCaption = findViewById(R.id.etCaption);
         btnPost = findViewById(R.id.btnPost);
         ivPicture = findViewById(R.id.ivPicture);
-        takenImage = getIntent().getParcelableExtra("picture");
-        ivPicture.setImageBitmap(takenImage);
+        Bitmap picture = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("picture_bytes")
+                ,0, getIntent().getByteArrayExtra("picture_bytes").length);
+        ivPicture.setImageBitmap(picture);
     }
 
     @Override
@@ -60,6 +61,8 @@ public class PostActivity extends AppCompatActivity {
         Intent data = new Intent();
         data.putExtra("caption", caption);
         setResult(RESULT_OK, data);
+        etCaption.setText("");
+        ivPicture.setImageBitmap(null);
         finish();
     }
 }

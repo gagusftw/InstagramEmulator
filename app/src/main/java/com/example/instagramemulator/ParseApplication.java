@@ -2,7 +2,9 @@ package com.example.instagramemulator;
 
 import android.app.Application;
 
+import com.example.instagramemulator.Models.Post;
 import com.parse.Parse;
+import com.parse.ParseObject;
 
 public class ParseApplication extends Application {
     @Override
@@ -16,5 +18,7 @@ public class ParseApplication extends Application {
                 .server("https://parseapi.back4app.com")
                 .build()
         );
+
+        ParseObject.registerSubclass(Post.class);
     }
 }

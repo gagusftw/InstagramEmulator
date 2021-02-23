@@ -13,4 +13,5 @@
     <string name="picture_description">Picture just taken with camera</string>
     <string name="caption_hint">Caption...</string>
     <string name="post_button">Post To Feed</string>
+    <string name="timeline_construction">TIMELINE UNDER CONSTRUCTION</string>
 </resources>
