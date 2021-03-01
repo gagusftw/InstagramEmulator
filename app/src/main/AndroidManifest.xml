@@ -31,15 +31,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider" />
         </provider>
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".PostActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".TimelineActivity">
+        <activity android:name=".MainActivity">
         </activity>
     </application>
 

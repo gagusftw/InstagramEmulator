@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -39,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSignUp = findViewById(R.id.btnSignUp);
 
         if(ParseUser.getCurrentUser() != null) {
-            Intent intent = new Intent(this, TimelineActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
     }
@@ -54,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(e == null) {
                     Log.i(TAG, String.format("%s logged in successfully", username));
                     Toast.makeText(LoginActivity.this, "Logging in...", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, TimelineActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     etUsername.setText("");
                     etPassword.setText("");
                     startActivity(intent);
@@ -80,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(e == null) {
                     Log.i(TAG, String.format("New account created for %s", username));
                     Toast.makeText(LoginActivity.this, "User signed up", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, TimelineActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     etUsername.setText("");
                     etPassword.setText("");
                     startActivity(intent);
