@@ -2,32 +2,36 @@ package com.example.instagramemulator;
 
 
 import androidx.fragment.app.Fragment;
-
-import android.content.Context;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.instagramemulator.Models.Post;
+import com.example.instagramemulator.Models.PostAdapter;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
-//    public static final String TAG = "PROFILE_FRAGMENT";
-    public final Context context = getActivity();
-//    BottomNavigationView bottomNavigation;
+public class ProfileFragment extends TimelineFragment {
+    public static final String TAG = "PROFILE_FRAGMENT";
     TextView tvCurrentUser;
     Button btnLogOut;
-//    String photoFileName = "photo.jpg";
-//    File photoFile;
-
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -50,7 +54,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
-//        bottomNavigation = view.findViewById(R.id.btmNavigation);
+        super.onViewCreated(view, savedInstanceState);
         tvCurrentUser = view.findViewById(R.id.tvCurrentUser);
         btnLogOut = view.findViewById(R.id.btnLogOut);
 
@@ -62,46 +66,29 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
-//        bottomNavigation.getMenu().getItem(2).setIcon(R.drawable.ic_profile_filled);
-//        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-//            switch (item.getItemId()) {
-//                case R.id.icHome:
-//                    if(R.id.icHome != bottomNavigation.getSelectedItemId()) {
-//                        Log.i(TAG, "Home icon selected; switching to TimelineFragment");
-//                        finish();
-//                    }
-//                    break;
-//                case R.id.icPost:
-//                    if(R.id.icPost != bottomNavigation.getSelectedItemId()) {
-//                        Log.i(TAG, "Post icon selected; opening camera");
-//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                        photoFile = getPhotoFileUri(photoFileName);
-//                        Uri fileProvider = FileProvider.getUriForFile(ProfileFragment.this, "com.codepath.fileprovider", photoFile);
-//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-//
-//                        if(intent.resolveActivity(getPackageManager()) != null) {
-//                            try {
-//                                startActivityForResult(intent, CAMERA_REQUEST_CODE);
-//                            }
-//                            catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                    break;
-//            }
-//            return true;
-//        });
     }
 
-//    public File getPhotoFileUri(String fileName) {
-//        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-//        if(!mediaStorageDir.exists() && !mediaStorageDir.mkdirs())
-//            Log.e(TAG, "Failed to create directory");
-//
-//        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-//
-//        return file;
-//    }
+    @Override
+    public void fetchPosts(int n) {
+        ParseQuery<Post> query = ParseQuery.getQuery("Post");
+        query.setLimit(n);
+        query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
+        query.addDescendingOrder(Post.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> objects, ParseException e) {
+                if(e == null) {
+                    Log.i(TAG, "Successfully fetched List of Parse Posts");
+                    listPosts = objects;
+                    adapter.clear();
+                    adapter.addAll(listPosts);
+                }
+                else {
+                    Log.e(TAG, "Error fetching list of Parse Posts");
+                    Toast.makeText(getContext(), "Could not fetch posts", Toast.LENGTH_SHORT).show();
+                }
+                swipeRefreshContainer.setRefreshing(false);
+            }
+        });
+    }
 }

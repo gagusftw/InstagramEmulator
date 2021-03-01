@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,15 +28,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 import android.widget.Toast;
 
-import com.example.instagramemulator.Models.Post;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,7 +38,6 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MAIN_ACTIVITY";
     public static final int CAMERA_REQUEST_CODE = 666;
-    public final Context context = this;
     BottomNavigationView bottomNavigation;
     FragmentManager fragmentManager = getSupportFragmentManager();
     String photoFileName = "photo.jpg";
@@ -55,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setLogo(R.drawable.instagram_logo);
 
         //Add the TimelineFragment to the activity upon first startup
         if(savedInstanceState == null) {
@@ -93,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        bottomNavigation.getMenu().getItem(0).setIcon(R.drawable.ic_home_outline);
-                        bottomNavigation.getMenu().getItem(1).setIcon(R.drawable.ic_post_filled);
-                        bottomNavigation.getMenu().getItem(2).setIcon(R.drawable.ic_profile_outline);
                     }
                     break;
                 case R.id.icProfile:
@@ -108,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigation.getMenu().getItem(0).setIcon(R.drawable.ic_home_outline);
                         bottomNavigation.getMenu().getItem(1).setIcon(R.drawable.ic_post_outline);
                         bottomNavigation.getMenu().getItem(2).setIcon(R.drawable.ic_profile_filled);
-//                        Intent intent = new Intent(context, ProfileFragment.class);
-//                        startActivity(intent);
                     }
                     break;
             }
@@ -133,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
                 takenImage.compress(Bitmap.CompressFormat.JPEG, 50, bs);
 
-//                Intent intent = new Intent(this, PostActivity.class);
-//                intent.putExtra("picture_bytes", bs.toByteArray());
                 try {
                     Log.i(TAG, "Have picture; starting PostFragment");
 
@@ -145,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.fragmentPrimary, PostFragment.class, bundle)
                             .setReorderingAllowed(true)
                             .commit();
-//                    startActivityForResult(intent, POST_REQUEST_CODE);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -155,18 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error taking photo", Toast.LENGTH_SHORT).show();
             }
         }
-//        else if(requestCode == POST_REQUEST_CODE && resultCode == RESULT_OK) {
-//            try {
-//                savePost(data.getExtras().getString("caption"), ParseUser.getCurrentUser(), photoFile);
-//                //Do the Recycler view stuff
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        else {
-//            Log.e(TAG, "Bad result while finishing activity");
-//        }
     }
 
     public File getPhotoFileUri(String fileName) {

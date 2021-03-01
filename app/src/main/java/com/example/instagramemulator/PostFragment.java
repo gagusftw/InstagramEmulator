@@ -1,7 +1,5 @@
 package com.example.instagramemulator;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.instagramemulator.Models.Post;
 import com.parse.ParseException;
@@ -34,7 +31,6 @@ import java.io.File;
  */
 public class PostFragment extends Fragment {
     public static final String TAG = "POST_FRAGMENT";
-    public final Context context = getActivity();
     EditText etCaption;
     Button btnPost;
     ImageView ivPicture;
